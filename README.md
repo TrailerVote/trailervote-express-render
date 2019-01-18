@@ -1,34 +1,15 @@
-# TrailerVote Express Authorization
+# TrailerVote Express Render
 
-[![Build Status](https://travis-ci.com/TrailerVote/express-authorization.svg?branch=master)](https://travis-ci.com/TrailerVote/express-authorization)
+[![Build Status](https://travis-ci.com/TrailerVote/express-render.svg?branch=master)](https://travis-ci.com/TrailerVote/express-render)
 
-[![NPM Package Version](https://badge.fury.io/js/@trailervote%2Fexpress-authorization.svg)](https://npmjs.org/package/@trailervote/express-authorization)
+[![NPM Package Version](https://badge.fury.io/js/@trailervote%2Fexpress-render.svg)](https://npmjs.org/package/@trailervote/express-render)
 
 Authorization middleware for TrailerVote ecosystem
 
 ```bash
-yarn add @trailervote/express-authorization
+yarn add @trailervote/express-render
 ```
 
 ```typescript
-import { basic } from '@xpbytes/express-routes-archive'
-
-const root = new RoutesArchive()
-root.register('foo', '/test')
-root.register('bar', (mountedAt: string, arg: any) => `${mountedAt}/test?bar=${arg}`)
-
-// For example you can create these when you mount a new "Router" and pass it along
-// the routes are shared among archives in the chain.
-const up = new RoutesArchive('/level', root)
-up.register('level', '/two')
-up.register('penthouse', (mountedAt: string) => `${mountedAt}/over-9000`)
-
-root.path('bar', 'my-arg')
-// => /test?bar=my-arg
-
-root.url('penthouse', req)
-// => https://test.xpbytes.com/level/over-9000
+import { renderMedia, renderError, addWarning, setLinks } from '@trailervote/express-render'
 ```
-
-You can use `SSL_ENABLED` to make generated urls `https`.
-You can use `SERVER_URL` to mount the path onto that URL instead of the request hostname.
