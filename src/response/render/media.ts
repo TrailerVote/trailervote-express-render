@@ -6,8 +6,12 @@ import { MediaLinks, setLinks } from '../headers/link.js'
 
 const version = metadata.version
 
-type MediaLike = {
+export type MediaLike = {
   _links?: MediaLinks
+}
+
+export type WrappedMediaLike = {
+  [P: string]: MediaLike
 }
 
 /**
@@ -17,7 +21,7 @@ type MediaLike = {
  * @param {Response} res the express response
  * @param {MediaLike} content the media like
  */
-export function renderMedia(res: Response, content: MediaLike) {
+export function renderMedia(res: Response, content: MediaLike | WrappedMediaLike) {
   const { requestTag } = res.locals
 
   const links = (content._links || (content as any)[Object.keys(content)[0]]._links) as MediaLinks

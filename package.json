@@ -1,6 +1,6 @@
 {
   "name": "@trailervote/express-render",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Common render patterns for the TrailerVote ecosystem",
   "main": "dist/src/index.js",
   "module": "dist/src/index.js",
