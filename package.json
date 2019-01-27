@@ -1,9 +1,9 @@
 {
   "name": "@trailervote/express-render",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "Common render patterns for the TrailerVote ecosystem",
-  "main": "dist/src/index.js",
-  "module": "dist/src/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "repository": "https://github.com/TrailerVote/trailervote-express-render",
   "author": "Derk-Jan Karrenbeld <dj@trailervote.com>",
   "license": "MIT",
@@ -15,6 +15,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
+    "build:watch": "tsc --watch",
     "prebuild:test": "rimraf tests/dist",
     "build:test": "tsc --project tests/tsconfig.json",
     "lint": "tslint --project tsconfig.json",

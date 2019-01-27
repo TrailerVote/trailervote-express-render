@@ -1,35 +1,42 @@
 import { logger, responseTime } from '@trailervote/express-logger'
-import metadata from '../../../package.json'
 
-import { Response } from 'express'
 import { MediaLinks, setLinks } from '../headers/link.js'
+import { ResponseWithRequestTag } from '../ResponseWithRequestTag.js'
 
-const version = metadata.version
+export type Renderable<K extends string> = Record<K, MediaLike>
 
 export type MediaLike = {
-  _links?: MediaLinks
+  _links: MediaLinks
 }
 
-export type WrappedMediaLike = {
-  [P: string]: MediaLike
+export interface Metadata {
+  pkg: string
+  version: string
 }
 
 /**
  * Render a MediaLike
  *
  * @export
- * @param {Response} res the express response
+ * @param {ResponseWithRequestTag} res the express response
  * @param {MediaLike} content the media like
+ * @param {Metadata} metadata the metadata
  */
-export function renderMedia(res: Response, content: MediaLike | WrappedMediaLike) {
+export function renderMedia<K extends string, C extends Renderable<K>>(
+  res: ResponseWithRequestTag,
+  content: C,
+  metadata: Metadata
+) {
   const { requestTag } = res.locals
 
-  const links = (content._links || (content as any)[Object.keys(content)[0]]._links) as MediaLinks
-  setLinks(res, links)
+  const key: K = Object.keys(content)[0] as K
+  const links = setLinks(res, content[key]._links)
 
   const tag = `${requestTag}[render]${responseTime(res)}`
   const localLogger = logger(res)
   localLogger.info(`${tag} render media type "${res.locals.negotiatedAccept}`)
+
+  const { pkg, version } = metadata
 
   res.header('Vary', 'Authorization, Accept-Encoding').format({
     'text/html'() {
@@ -37,6 +44,7 @@ export function renderMedia(res: Response, content: MediaLike | WrappedMediaLike
         content,
         links,
         mime_type: res.locals.negotiatedAccept,
+        pkg,
         version
       })
     },
@@ -47,6 +55,22 @@ export function renderMedia(res: Response, content: MediaLike | WrappedMediaLike
         .send(content)
     }
   })
+}
+
+/**
+ * Make a function that renders media with the metadata pre-set
+ *
+ * @export
+ * @param {Metadata} metadata the metadata
+ * @returns the Render Media function
+ */
+export function makeRenderMedia(metadata: Metadata) {
+  return <K extends string, C extends Renderable<K>>(
+    res: ResponseWithRequestTag,
+    content: C
+  ) => {
+    return renderMedia<K, C>(res, content, metadata)
+  }
 }
 
 export const media = renderMedia

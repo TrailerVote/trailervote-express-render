@@ -1,13 +1,14 @@
 import { logger, responseTime } from '@trailervote/express-logger'
 
 import crypto from 'crypto'
-import { Response } from 'express'
+
+import { ResponseWithRequestTag } from '../ResponseWithRequestTag'
 
 type ErrorLike = Error & {
-  trailer_vote_error_code?: number | string,
-  trailerVoteErrorCode?: number | string,
-  errorCode?: number | string,
-  error_code?: number | string,
+  trailer_vote_error_code?: number | string
+  trailerVoteErrorCode?: number | string
+  errorCode?: number | string
+  error_code?: number | string
   code?: number | string
 }
 
@@ -19,9 +20,14 @@ type ErrorLike = Error & {
  * @param {number} status the status (HTTP) code
  * @param {(string | ErrorLike)} messageOrError the error message
  */
-export function renderError(res: Response, status: number, messageOrError: string | ErrorLike) {
+export function renderError(
+  res: ResponseWithRequestTag,
+  status: number,
+  messageOrError: string | ErrorLike
+) {
   const tag = `${res.locals.requestTag}[render]${responseTime(res)}`
-  const message = typeof messageOrError === 'string' ? messageOrError : messageOrError.message
+  const message =
+    typeof messageOrError === 'string' ? messageOrError : messageOrError.message
   logger(res).info(`${tag} status: ${status}, message: ${message}`)
 
   res
@@ -35,12 +41,13 @@ function errorCode(source: string | ErrorLike) {
     return undefined
   }
 
-  const internalErrorCode = source.trailer_vote_error_code
-    || source.trailerVoteErrorCode
-    || source.error_code
-    || source.errorCode
-    || source.code
-    || undefined
+  const internalErrorCode =
+    source.trailer_vote_error_code ||
+    source.trailerVoteErrorCode ||
+    source.error_code ||
+    source.errorCode ||
+    source.code ||
+    undefined
 
   if (internalErrorCode) {
     return `Ex${internalErrorCode}`
