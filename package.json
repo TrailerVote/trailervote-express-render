@@ -31,7 +31,7 @@
   "devDependencies": {
     "@types/tape": "^4.2.33",
     "esm": "^3.2.25",
-    "husky": "^3.0.9",
+    "husky": "^4.0.10",
     "lint-staged": "^9.4.2",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",
